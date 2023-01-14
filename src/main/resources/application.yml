@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      user: root
+      password: root
+      uri: mongodb://root:root@localhost:27017/register?authSource=admin
+
+server:
+  servlet:
+    context-path: /rent/v1/
