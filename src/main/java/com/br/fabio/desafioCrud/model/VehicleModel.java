@@ -22,4 +22,5 @@ public class VehicleModel implements Serializable {
     private String model;
 
     private Boolean available;
+
 }

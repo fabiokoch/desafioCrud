@@ -47,9 +47,9 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public VehicleResponseList getCarByModel(String model) {
+    public VehicleResponseList getCarByModel(String model, Boolean isAvailable) {
         log.info("Starting method getCarByModel service");
-        List<VehicleModel> vehicleModel = repository.findVehicleByModelIgnoreCaseAndAvailable(model, true);
+        List<VehicleModel> vehicleModel = repository.findVehicleByModelIgnoreCaseAndAvailable(model, isAvailable);
 
         if (vehicleModel.isEmpty()) {
             throw new VehicleNotFoundException();
@@ -64,9 +64,9 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public VehicleResponseList getCarByBrand(String brand) {
+    public VehicleResponseList getCarByBrand(String brand, Boolean isAvailable) {
         log.info("Starting method getCarByBrand service");
-        List<VehicleModel> vehicleModel = repository.findVehicleByBrandIgnoreCaseAndAvailable(brand, true);
+        List<VehicleModel> vehicleModel = repository.findVehicleByBrandIgnoreCaseAndAvailable(brand, isAvailable);
 
         if (vehicleModel.isEmpty()) {
             throw new VehicleNotFoundException();
@@ -79,4 +79,34 @@ public class RegisterServiceImpl implements RegisterService {
         log.info("Finishing method getCarByBrand with response  {} ", response);
         return response;
     }
+
+    @Override
+    @Transactional
+    public void deleteCar(String carId) {
+        log.info("Starting method deleteCar service");
+        repository.findById(carId).orElseThrow(VehicleNotFoundException::new);
+
+        repository.deleteById(carId);
+        log.info("Finishing method deleteCar");
+    }
+
+    @Override
+    @Transactional
+    public void updateCar(String id, VehicleRequest vehicleRequest) {
+        log.info("Starting method updateCar service");
+        VehicleModel vehicleModel = repository.findById(id).orElseThrow(VehicleNotFoundException::new);
+        vehicleModel.setModel(vehicleRequest.getModel() == null ? vehicleModel.getModel() : vehicleRequest.getModel());
+        vehicleModel.setAvailable(vehicleRequest.isAvailable() == null ? vehicleModel.getAvailable() : vehicleRequest.isAvailable());
+        vehicleModel.setBrand(vehicleRequest.getBrand() == null ? vehicleModel.getBrand() : vehicleRequest.getBrand());
+
+        try {
+            repository.save(vehicleModel);
+        } catch (Exception e) {
+            log.error("Error during db save {}", e.getMessage());
+            throw new RuntimeException();
+        }
+
+        log.info("Finishing method updateCar");
+    }
+
 }

@@ -9,8 +9,12 @@ public interface RegisterService {
 
     VehicleCreatedID createCar(VehicleRequest vehicleRequest);
 
-    VehicleResponseList getCarByModel(String model);
+    VehicleResponseList getCarByModel(String model, Boolean isAvailable);
 
-    VehicleResponseList getCarByBrand(String brand);
+    VehicleResponseList getCarByBrand(String brand, Boolean isAvailable);
+
+    void deleteCar(String carId);
+
+    void updateCar(String id, VehicleRequest body);
 
 }
