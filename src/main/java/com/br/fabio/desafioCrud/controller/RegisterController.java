@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,6 +21,7 @@ public class RegisterController implements CarApi {
     private RegisterService registerService;
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VehicleCreatedID> createCar(VehicleRequest vehicleRequest) {
         log.info("Starting createCar method with request, {}", vehicleRequest);
 
@@ -29,8 +31,8 @@ public class RegisterController implements CarApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VehicleResponseList> getCarByModel(String model, Boolean isAvailable) {
         log.info("Starting getCarByModel method ");
 
@@ -41,6 +43,7 @@ public class RegisterController implements CarApi {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VehicleResponseList> getCarByBrand(String brand, Boolean isAvailable) {
         log.info("Starting getCarByBrand method ");
 
@@ -51,6 +54,7 @@ public class RegisterController implements CarApi {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCar(String cardId) {
         log.info("Starting deleteCar method ");
 
@@ -61,9 +65,9 @@ public class RegisterController implements CarApi {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateCar(String id, VehicleRequest body) {
         log.info("Starting updateCar method with carID {} and request body {} ", id, body);
-
 
         registerService.updateCar(id, body);
 

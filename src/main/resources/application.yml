@@ -4,6 +4,8 @@ spring:
       user: root
       password: root
       uri: mongodb://root:root@localhost:27017/register?authSource=admin
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   servlet:

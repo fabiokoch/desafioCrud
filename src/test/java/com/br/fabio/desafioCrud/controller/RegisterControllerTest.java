@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static com.br.fabio.desafioCrud.MockUtils.getVehicleRequest;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest(controllers = RegisterController.class)
@@ -43,7 +44,7 @@ class RegisterControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(
-                                "/car")
+                                "/car").with(httpBasic("registerUser", "registerPassword"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(ow.writeValueAsString(getVehicleRequest())))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
@@ -56,7 +57,7 @@ class RegisterControllerTest {
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(
-                                "/car/model/ANY?available=true")
+                                "/car/model/ANY?available=true").with(httpBasic("registerUser", "registerPassword"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -67,7 +68,7 @@ class RegisterControllerTest {
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(
-                                "/car/brand/ANY?available=true")
+                                "/car/brand/ANY?available=true").with(httpBasic("registerUser", "registerPassword"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -75,7 +76,7 @@ class RegisterControllerTest {
 
     @Test
     void deleteCarTest() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.delete("/car/{id}", 1))
+        this.mockMvc.perform(MockMvcRequestBuilders.delete("/car/{id}", 1).with(httpBasic("registerUser", "registerPassword")))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
@@ -85,7 +86,7 @@ class RegisterControllerTest {
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 
         this.mockMvc.perform(MockMvcRequestBuilders
-                        .put("/car/{id}", 2)
+                        .put("/car/{id}", 2).with(httpBasic("registerUser", "registerPassword"))
                         .content(ow.writeValueAsString(getVehicleRequest()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
